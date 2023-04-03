@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,26 +9,11 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ImageBackground,
+  Dimensions,
 } from "react-native";
-import AppLoading from "expo-app-loading";
 
-import * as Font from "expo-font";
-//1 metod
-// import { AppLoading } from "expo";
-//2 metod
-
-const loadApplication = async () => {
-  await Font.loadAsync({
-    "RobotoCondensed-Regular": require("./assets/fonts/RobotoCondensed-Regular.ttf"),
-    "RobotoCondensed-Light": require("./assets/fonts/RobotoCondensed-Light.ttf"),
-  });
-};
-//1 metod
-// const loadFonts = async () => {
-//   await Font.loadAsync({
-//     "RobotoCondensed-Regular": require("./assets/fonts/RobotoCondensed-Regular.ttf"),
-//   });
-// };
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 
 const initialState = {
   email: "",
@@ -39,7 +24,20 @@ const initialState = {
 export default function App() {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
-  const [isReady, setIsReady] = useState(false);
+  const [dimensions, setDimensions] = useState(
+    Dimensions.get("window").width - 16 * 2
+  );
+
+  useEffect(() => {
+    const onChange = () => {
+      const width = Dimensions.get("window").width - 16 * 2;
+      setDimensions(width);
+    };
+    Dimensions.addEventListener("change", onChange);
+    return () => {
+      Dimensions.removeEventListener("change", onChange);
+    };
+  }, []);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -47,41 +45,44 @@ export default function App() {
     setState(initialState);
   };
 
-  if (!isReady) {
-    return (
-      <AppLoading
-        startAsync={loadApplication}
-        onFinish={() => setIsReady(true)}
-        onError={(err) => console.log(err)}
-      />
-    );
+  SplashScreen.preventAutoHideAsync();
+
+  const [fontsLoaded] = useFonts({
+    "Roboto-Bolt": require("./assets/fonts/Roboto-Bold.ttf"),
+    "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
+    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
   }
-  //1 metod
-  // if (!isReady) {
-  //   return (
-  //     <AppLoading startAsync={loadFonts} onFinish={() => setIsReady(true)} />
-  //   );
-  // }
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container}>
+      <View style={styles.container} onLayout={onLayoutRootView}>
         <ImageBackground
           style={styles.image}
-          source={require("./assets/phone-2.jpg")}
+          source={require("./assets/Photo_BG.jpg")}
         >
           <KeyboardAvoidingView>
             <View
               style={{
                 ...styles.form,
-                marginBottom: isShowKeyboard ? 20 : 50,
+                // marginBottom: isShowKeyboard ? 20 : 50,
+                width: dimensions,
               }}
             >
               <View style={styles.header}>
-                <Text style={styles.headerTitle}>Реєстрація</Text>
+                <Text style={styles.headerTitle}>Регистрация</Text>
               </View>
               <View>
-                <Text style={styles.inputTitle}>Login</Text>
+                <Text style={styles.inputTitle} placeholder="Логин" />
                 <TextInput
                   style={styles.input}
                   textAlign={"center"}
@@ -95,7 +96,7 @@ export default function App() {
                 />
               </View>
               <View style={{ marginTop: 20 }}>
-                <Text style={styles.inputTitle}>Email</Text>
+                <Text style={styles.inputTitle} />
                 <TextInput
                   style={styles.input}
                   textAlign={"center"}
@@ -109,7 +110,7 @@ export default function App() {
                 />
               </View>
               <View style={{ marginTop: 20 }}>
-                <Text style={styles.inputTitle}>Password</Text>
+                <Text style={styles.inputTitle} />
                 <TextInput
                   style={styles.input}
                   textAlign={"center"}
@@ -128,7 +129,7 @@ export default function App() {
                 activeOpacity={0.8}
                 onPress={keyboardHide}
               >
-                <Text style={styles.btnTitle}>Зареєструватися</Text>
+                <Text style={styles.btnTitle}>Зарегистрироваться</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
@@ -146,39 +147,47 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#FF9933",
-    height: 40,
-    borderRadius: 5,
+    fontFamily: "Roboto-Regular",
 
-    backgroundColor: "#CCFFFF",
+    color: "#BDBDBD",
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#E8E8E8",
+    height: 50,
+    borderRadius: 8,
+    backgroundColor: "#F6F6F6",
+    padding: 16,
+    color: "#212121",
   },
   form: {
-    marginHorizontal: 40,
+    // marginHorizontal: 40,
   },
   inputTitle: {
     marginBottom: 10,
     fontSize: 15,
     fontWeight: 500,
-    color: "#ffff",
-    fontFamily: "RobotoCondensed-Light",
+    color: "#BDBDBD",
+    fontFamily: "Roboto-Medium",
   },
   btn: {
-    height: 40,
-    borderRadius: 20,
+    height: 50,
+    borderRadius: 100,
     marginTop: 40,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FF9933",
+    backgroundColor: "#FF6C00",
     marginHorizontal: 20,
   },
   btnTitle: {
-    fontSize: 15,
+    fontSize: 16,
+    fontFamily: "Roboto-Medium",
+    color: "#FFFFFF",
   },
   image: {
     flex: 1,
     justifyContent: "center",
     resizeMode: "cover",
+    alignItems: "center",
   },
   header: {
     alignItems: "center",
@@ -186,7 +195,10 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 30,
-    color: "#ffff",
-    fontFamily: "RobotoCondensed-Regular",
+    color: "#212121",
+    fontFamily: "Roboto-Medium",
+    letterSpacing: 0.01,
+    fontWeight: 500,
+    lineHeight: 35,
   },
 });
