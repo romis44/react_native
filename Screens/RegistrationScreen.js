@@ -1,45 +1,64 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+  Keyboard,
+  KeyboardAvoidingView,
+  Image,
   Text,
   TextInput,
-  View,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Keyboard,
-  TouchableWithoutFeedback,
-  ImageBackground,
   Dimensions,
-  // Platform,
+  Platform,
 } from "react-native";
 
-import { useFonts } from "expo-font";
+import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
 const initialState = {
+  login: "",
   email: "",
   password: "",
-  login: "",
 };
 
+SplashScreen.preventAutoHideAsync();
+
 export default function RegistrationScreen() {
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  console.log(Platform.OS);
+  console.log("Hi from Debugger!");
+
+  const [isReady, setIsReady] = useState(false);
   const [state, setState] = useState(initialState);
+  const [, setIsKeyboardShown] = useState(false);
+  const [isPasswordSecured, setIsPasswordSecured] = useState(true);
+
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 16 * 2
   );
-  const [dimensionsHeigth, setDimensionsHeigth] = useState(
-    Dimensions.get("window").height
-  );
 
-  const [isSecurePassword, setIsSecurePassword] = useState(true);
-  const [emailFocus, setEmailFocus] = useState(false);
-  const [loginFocus, setLoginFocus] = useState(false);
-  const [passwordFocus, setPasswordFocus] = useState(false);
+  const [, setDimensionsHeight] = useState(Dimensions.get("window").height);
 
-  const focusInputStyle = (focus) => {
-    return focus ? { ...styles.input, ...styles.inputFocus } : styles.input;
+  const keyboardHide = () => {
+    setIsKeyboardShown(false);
+    Keyboard.dismiss();
   };
+
+  const formSubmit = () => {
+    setIsPasswordSecured(true);
+    console.log(state);
+    setState(initialState);
+    keyboardHide();
+  };
+
+  const passwordShown = () =>
+    isPasswordSecured === true
+      ? setIsPasswordSecured(false)
+      : setIsPasswordSecured(true);
+
+  const showPasswordBtn = isPasswordSecured
+    ? "Reveal password"
+    : "Hide password";
 
   useEffect(() => {
     const onChange = () => {
@@ -47,25 +66,27 @@ export default function RegistrationScreen() {
       const height = Dimensions.get("window").height;
 
       setDimensions(width);
-      setDimensionsHeigth(height);
+      setDimensionsHeight(height);
     };
+
     Dimensions.addEventListener("change", onChange);
+
     return () => {
       Dimensions.removeEventListener("change", onChange);
     };
-  });
+  }, []);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
       () => {
-        setIsShowKeyboard(true);
+        setIsKeyboardShown(true);
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
       "keyboardDidHide",
       () => {
-        setIsShowKeyboard(false);
+        setIsKeyboardShown(false);
       }
     );
 
@@ -75,184 +96,131 @@ export default function RegistrationScreen() {
     };
   }, []);
 
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-    // setState(initialState);
-  };
+  useEffect(() => {
+    async function loadApplication() {
+      try {
+        await Font.loadAsync({
+          "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
+          "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
+        });
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsReady(true);
+      }
+    }
 
-  const formSubmit = () => {
-    setState(initialState);
-    setIsSecurePassword(true);
-    console.log(state);
-  };
-
-  const passwordShown = () => {
-    isSecurePassword === true
-      ? setIsSecurePassword(false)
-      : setIsSecurePassword(true);
-  };
-
-  const showPasswordBtn = isSecurePassword ? "Показать" : "Cкрыть";
-
-  SplashScreen.preventAutoHideAsync();
-
-  const [fontsLoaded] = useFonts({
-    "Roboto-Bolt": require("../assets/fonts/Roboto-Bold.ttf"),
-    "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
-    "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
-  });
+    loadApplication();
+  }, []);
 
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
+    if (isReady) {
       await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [isReady]);
 
-  if (!fontsLoaded) {
+  if (!isReady) {
     return null;
   }
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={{ ...styles.container }} onLayout={onLayoutRootView}>
-        <ImageBackground
-          style={styles.image}
+        <Image
+          style={styles.background}
           source={require("../assets/Photo_BG.jpg")}
+        />
+        <View
+          style={{
+            ...styles.overallWrapper,
+            width: dimensions + 16 * 2,
+          }}
         >
-          <View
-            style={{
-              ...styles.form,
-              // marginBottom: isShowKeyboard ? 20 : 50,
-
-              width: dimensions + 16 * 2,
-              marginTop: dimensions > dimensionsHeigth ? 100 : 0,
-            }}
+          <KeyboardAvoidingView
+            style={styles.regulatedContainer}
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
-            <KeyboardAvoidingView
-            // behavior={Platform.OS == "ios" ? "padding" : "height"}
-            >
-              <View style={styles.avatar}>
-                <View style={styles.avatarWrapper}>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    style={styles.addAvatarBtn}
-                    // onPress={}
-                  >
-                    <Text style={styles.addAvatarBtnTitle}>+</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View
-                style={{
-                  width: dimensions,
-                }}
-              >
-                <View style={styles.header}>
-                  <Text style={styles.headerTitle}>Регистрация</Text>
-                </View>
-                <View>
-                  <TextInput
-                    // style={styles.inputTitle}
-                    style={focusInputStyle(loginFocus)}
-                    placeholder="Логин"
-                    // style={styles.input}
-                    textAlign={"center"}
-                    onFocus={() => {
-                      setIsShowKeyboard(true), setLoginFocus(true);
-                    }}
-                    onBlur={() => {
-                      setLoginFocus(false);
-                    }}
-                    value={state.login}
-                    onChangeText={(value) =>
-                      setState((prevState) => ({ ...prevState, login: value }))
-                    }
-                  />
-                </View>
-                <View style={{ marginTop: 16 }}>
-                  <TextInput
-                    style={focusInputStyle(emailFocus)}
-                    textAlign={"center"}
-                    placeholder="Адрес электронной почты"
-                    // style={styles.input}
-
-                    onFocus={() => {
-                      setIsShowKeyboard(true), setEmailFocus(true);
-                    }}
-                    onBlur={() => {
-                      setEmailFocus(false);
-                    }}
-                    value={state.email}
-                    onChangeText={(value) =>
-                      setState((prevState) => ({ ...prevState, email: value }))
-                    }
-                  />
-                </View>
-                <View style={{ marginTop: 16, marginBottom: 30 }}>
-                  <TextInput
-                    // style={styles.input}
-                    style={focusInputStyle(passwordFocus)}
-                    textAlign={"center"}
-                    placeholder="Пароль"
-                    secureTextEntry={isSecurePassword}
-                    // secureTextEntry={true}
-                    onFocus={() => {
-                      setIsShowKeyboard(true), setPasswordFocus(true);
-                    }}
-                    onBlur={() => {
-                      setPasswordFocus(false);
-                    }}
-                    value={state.password}
-                    onChangeText={(value) =>
-                      setState((prevState) => ({
-                        ...prevState,
-                        password: value,
-                      }))
-                    }
-                  />
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    style={styles.passwordShowBtn}
-                    onPress={passwordShown}
-                  >
-                    <Text style={styles.registerLinkTitle}>
-                      {showPasswordBtn}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </KeyboardAvoidingView>
-            <View
-              style={{
-                width: dimensions,
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  ...styles.btn,
-                  display: isShowKeyboard ? "none" : "flex",
-                }}
-                activeOpacity={0.8}
-                onPress={formSubmit}
-              >
-                <Text style={styles.btnTitle}>Зарегистрироваться</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={{
-                  ...styles.registerLink,
-                  display: isShowKeyboard ? "none" : "flex",
-                }}
-              >
-                <Text style={styles.registerLinkTitle}>
-                  Уже есть аккаунт? Войти
-                </Text>
+            <View style={styles.avatar}>
+              <TouchableOpacity style={styles.iconWrapper} activeOpacity={0.8}>
+                <Image
+                  style={styles.addIcon}
+                  source={require("../assets/images/add.png")}
+                />
               </TouchableOpacity>
             </View>
+            <View style={{ ...styles.registration, width: dimensions }}>
+              <Text style={styles.registrationTitle}>Registration</Text>
+
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.registrationInput}
+                  placeholder="Login"
+                  onFocus={() => setIsKeyboardShown(true)}
+                  value={state.login}
+                  onChangeText={(value) =>
+                    setState((prevState) => ({ ...prevState, login: value }))
+                  }
+                />
+              </View>
+
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.registrationInput}
+                  placeholder="E-Mail"
+                  onFocus={() => setIsKeyboardShown(true)}
+                  value={state.email}
+                  onChangeText={(value) =>
+                    setState((prevState) => ({ ...prevState, email: value }))
+                  }
+                />
+              </View>
+
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.registrationInput}
+                  placeholder="Password"
+                  secureTextEntry={isPasswordSecured}
+                  onFocus={() => setIsKeyboardShown(true)}
+                  value={state.password}
+                  onChangeText={(value) =>
+                    setState((prevState) => ({
+                      ...prevState,
+                      password: value,
+                    }))
+                  }
+                />
+
+                <TouchableOpacity
+                  style={styles.revealButton}
+                  activeOpacity={0.8}
+                  onPress={passwordShown}
+                >
+                  <Text style={styles.revealButtonTitle}>
+                    {showPasswordBtn}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+          <View style={{ ...styles.signUpButtonsWrapper, width: dimensions }}>
+            <TouchableOpacity
+              style={styles.signUpButton}
+              activeOpacity={0.8}
+              onPress={formSubmit}
+            >
+              <Text style={styles.signUpButtonTitle}>Sign Up</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.loginForExistedAccount}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.loginForExistedAccountTitle}>
+                Account already exists? Sign In
+              </Text>
+            </TouchableOpacity>
           </View>
-        </ImageBackground>
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -261,118 +229,111 @@ export default function RegistrationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    // alignItems: "center",
-    // justifyContent: "flex-end",
-  },
-
-  avatar: {
+    backgroundColor: "#FFFFFF",
+    justifyContent: "flex-end",
     alignItems: "center",
   },
-  avatarWrapper: {
+  background: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    resizeMode: "cover",
+  },
+  overallWrapper: {
+    width: "100%",
+    height: "67%",
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+  regulatedContainer: {
+    alignItems: "center",
+  },
+  avatar: {
+    position: "relative",
+    top: -60,
     width: 120,
     height: 120,
-    backgroundColor: "#F6F6F6",
+    zIndex: 1,
     borderRadius: 16,
-    position: "absolute",
-    top: -60,
+    backgroundColor: "#F6F6F6",
   },
-  addAvatarBtn: {
+  iconWrapper: {
     position: "absolute",
-    bottom: 20,
-    right: -12,
-    borderWidth: 1,
-    borderColor: "#FF6C00",
-    borderRadius: 100,
+    right: -13,
+    bottom: 14,
+  },
+  addIcon: {
     width: 25,
     height: 25,
-    justifyContent: "center",
-    alignItems: "center",
   },
-  addAvatarBtnTitle: {
-    color: "#FF6C00",
+  registration: {
+    width: "100%",
   },
-
-  inputFocus: { backgroundColor: "#fff", borderColor: "#FF6C00" },
-
-  input: {
+  registrationTitle: {
     fontFamily: "Roboto-Regular",
-
-    color: "#BDBDBD",
+    fontSize: 30,
+    lineHeight: 35,
+    letterSpacing: 0.01,
+    textAlign: "center",
+    marginTop: -28,
+  },
+  inputWrapper: {
+    position: "relative",
+    marginTop: 16,
+    marginHorizontal: 16,
+  },
+  registrationInput: {
+    fontFamily: "Roboto-Medium",
     fontSize: 16,
+    lineHeight: 19,
+    height: 50,
     borderWidth: 1,
     borderColor: "#E8E8E8",
-    height: 50,
     borderRadius: 8,
     backgroundColor: "#F6F6F6",
     padding: 16,
     color: "#212121",
   },
-  form: {
-    // marginHorizontal: 40,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
+  revealButton: {
+    position: "absolute",
+    bottom: 16,
+    right: 16,
   },
-  inputTitle: {
-    marginBottom: 10,
-    fontSize: 15,
-    fontWeight: 500,
-    color: "#BDBDBD",
+  revealButtonTitle: {
     fontFamily: "Roboto-Medium",
-  },
-  btn: {
-    // marginTop: 40,
-    // marginHorizontal: 20,
-    borderRadius: 100,
-    borderWidth: 1,
-    height: 51,
-    marginTop: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#FF6C00",
-    borderColor: "transparent",
-    paddingVertical: 10,
-  },
-  btnTitle: {
     fontSize: 16,
-    fontFamily: "Roboto-Regular",
+    lineHeight: 19,
+    color: "#1B4371",
+  },
+  signUpButtonsWrapper: {
+    marginHorizontal: 16,
+    marginTop: 43,
+    alignItems: "center",
+  },
+  signUpButton: {
+    width: "100%",
+    paddingVertical: 16,
+    borderRadius: 100,
+    backgroundColor: "#FF6C00",
+  },
+  signUpButtonTitle: {
+    fontFamily: "Roboto-Medium",
+    fontSize: 16,
+    lineHeight: 19,
+    textAlign: "center",
     color: "#FFFFFF",
   },
-  image: {
-    flex: 1,
-    justifyContent: "center",
-    resizeMode: "cover",
-    alignItems: "center",
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 32,
-    marginTop: 92,
-  },
-  headerTitle: {
-    fontSize: 30,
-    color: "#212121",
-    fontFamily: "Roboto-Medium",
-    letterSpacing: 0.01,
-    fontWeight: 500,
-    lineHeight: 35,
-  },
-  registerLinkTitle: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    color: "#1B4371",
-    alignItems: "center",
-  },
-  registerLink: {
-    alignItems: "center",
+  loginForExistedAccount: {
     marginTop: 16,
-    marginBottom: 78,
+    padding: 16,
   },
-  passwordShowBtn: {
-    position: "absolute",
-    top: 16,
-    right: 16,
+  loginForExistedAccountTitle: {
+    fontFamily: "Roboto-Medium",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#1B4371",
   },
 });
