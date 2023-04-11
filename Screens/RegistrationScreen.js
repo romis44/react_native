@@ -128,7 +128,7 @@ export default function RegistrationScreen() {
       <View style={{ ...styles.container }} onLayout={onLayoutRootView}>
         <Image
           style={styles.background}
-          source={require("../assets/Photo_BG.jpg")}
+          source={require("../assets/images/PhotoBG.png")}
         />
         <View
           style={{
