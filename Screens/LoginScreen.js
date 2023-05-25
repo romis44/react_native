@@ -35,7 +35,7 @@ export default function RegistrationScreen() {
     Dimensions.get("window").width - 16 * 2
   );
 
-  const [, setDimensionsHeight] = useState(Dimensions.get("window").height);
+  
 
   const keyboardHide = () => {
     setIsKeyboardShown(false);
@@ -64,7 +64,7 @@ export default function RegistrationScreen() {
       const height = Dimensions.get("window").height;
 
       setDimensions(width);
-      setDimensionsHeight(height);
+     
     };
 
     Dimensions.addEventListener("change", onChange);
