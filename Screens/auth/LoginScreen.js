@@ -13,11 +13,7 @@ import {
   Platform,
 } from "react-native";
 
-import * as Font from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-
 const initialState = {
-  login: "",
   email: "",
   password: "",
 };
@@ -26,7 +22,6 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RegistrationScreen() {
   console.log(Platform.OS);
-  console.log("Hi from Debugger!");
 
   const [isReady, setIsReady] = useState(false);
   const [state, setState] = useState(initialState);
@@ -125,7 +120,7 @@ export default function RegistrationScreen() {
       <View style={{ ...styles.container }} onLayout={onLayoutRootView}>
         <Image
           style={styles.background}
-          source={require("../assets/images/PhotoBG.png")}
+          source={require("../assets/images/PhotoBG-2.png")}
         />
         <View
           style={{
@@ -146,19 +141,7 @@ export default function RegistrationScreen() {
               </TouchableOpacity>
             </View>
             <View style={{ ...styles.registration, width: dimensions }}>
-              <Text style={styles.registrationTitle}>Registration</Text>
-
-              <View style={styles.inputWrapper}>
-                <TextInput
-                  style={styles.registrationInput}
-                  placeholder="Login"
-                  onFocus={() => setIsKeyboardShown(true)}
-                  value={state.login}
-                  onChangeText={(value) =>
-                    setState((prevState) => ({ ...prevState, login: value }))
-                  }
-                />
-              </View>
+              <Text style={styles.registrationTitle}>Log In</Text>
 
               <View style={styles.inputWrapper}>
                 <TextInput
@@ -192,28 +175,26 @@ export default function RegistrationScreen() {
                   activeOpacity={0.8}
                   onPress={passwordShown}
                 >
-                  <Text style={styles.revealButtonTitle}>
-                    {showPasswordBtn}
-                  </Text>
+                  <Text>{showPasswordBtn}</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </KeyboardAvoidingView>
           <View style={{ ...styles.signUpButtonsWrapper, width: dimensions }}>
             <TouchableOpacity
-              style={styles.signUpButton}
+              style={styles.loginButton}
               activeOpacity={0.8}
               onPress={formSubmit}
             >
-              <Text style={styles.signUpButtonTitle}>Sign Up</Text>
+              <Text style={styles.loginButtonTitle}>Log In</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.loginForExistedAccount}
+              style={styles.signUpForNotExistedAccount}
               activeOpacity={0.8}
             >
-              <Text style={styles.loginForExistedAccountTitle}>
-                Account already exists? Sign In
+              <Text style={styles.signUpForNotExistedAccountTitle}>
+                Still have no account? Sign Up
               </Text>
             </TouchableOpacity>
           </View>
@@ -310,24 +291,24 @@ const styles = StyleSheet.create({
     marginTop: 43,
     alignItems: "center",
   },
-  signUpButton: {
+  loginButton: {
     width: "100%",
     paddingVertical: 16,
     borderRadius: 100,
     backgroundColor: "#FF6C00",
   },
-  signUpButtonTitle: {
+  loginButtonTitle: {
     fontFamily: "Roboto-Medium",
     fontSize: 16,
     lineHeight: 19,
     textAlign: "center",
     color: "#FFFFFF",
   },
-  loginForExistedAccount: {
+  signUpForNotExistedAccount: {
     marginTop: 16,
     padding: 16,
   },
-  loginForExistedAccountTitle: {
+  signUpForNotExistedAccountTitle: {
     fontFamily: "Roboto-Medium",
     fontSize: 16,
     lineHeight: 19,

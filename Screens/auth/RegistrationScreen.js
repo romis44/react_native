@@ -13,10 +13,8 @@ import {
   Platform,
 } from "react-native";
 
-import * as Font from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-
 const initialState = {
+  login: "",
   email: "",
   password: "",
 };
@@ -25,6 +23,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RegistrationScreen() {
   console.log(Platform.OS);
+  console.log("Hi from Debugger!");
 
   const [isReady, setIsReady] = useState(false);
   const [state, setState] = useState(initialState);
@@ -34,8 +33,6 @@ export default function RegistrationScreen() {
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 16 * 2
   );
-
-  
 
   const keyboardHide = () => {
     setIsKeyboardShown(false);
@@ -64,7 +61,6 @@ export default function RegistrationScreen() {
       const height = Dimensions.get("window").height;
 
       setDimensions(width);
-     
     };
 
     Dimensions.addEventListener("change", onChange);
@@ -126,7 +122,7 @@ export default function RegistrationScreen() {
       <View style={{ ...styles.container }} onLayout={onLayoutRootView}>
         <Image
           style={styles.background}
-          source={require("../assets/images/PhotoBG-2.png")}
+          source={require("../assets/images/PhotoBG.png")}
         />
         <View
           style={{
@@ -147,7 +143,19 @@ export default function RegistrationScreen() {
               </TouchableOpacity>
             </View>
             <View style={{ ...styles.registration, width: dimensions }}>
-              <Text style={styles.registrationTitle}>Log In</Text>
+              <Text style={styles.registrationTitle}>Registration</Text>
+
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.registrationInput}
+                  placeholder="Login"
+                  onFocus={() => setIsKeyboardShown(true)}
+                  value={state.login}
+                  onChangeText={(value) =>
+                    setState((prevState) => ({ ...prevState, login: value }))
+                  }
+                />
+              </View>
 
               <View style={styles.inputWrapper}>
                 <TextInput
@@ -181,26 +189,28 @@ export default function RegistrationScreen() {
                   activeOpacity={0.8}
                   onPress={passwordShown}
                 >
-                  <Text>{showPasswordBtn}</Text>
+                  <Text style={styles.revealButtonTitle}>
+                    {showPasswordBtn}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
           </KeyboardAvoidingView>
           <View style={{ ...styles.signUpButtonsWrapper, width: dimensions }}>
             <TouchableOpacity
-              style={styles.loginButton}
+              style={styles.signUpButton}
               activeOpacity={0.8}
               onPress={formSubmit}
             >
-              <Text style={styles.loginButtonTitle}>Log In</Text>
+              <Text style={styles.signUpButtonTitle}>Sign Up</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.signUpForNotExistedAccount}
+              style={styles.loginForExistedAccount}
               activeOpacity={0.8}
             >
-              <Text style={styles.signUpForNotExistedAccountTitle}>
-                Still have no account? Sign Up
+              <Text style={styles.loginForExistedAccountTitle}>
+                Account already exists? Sign In
               </Text>
             </TouchableOpacity>
           </View>
@@ -297,24 +307,24 @@ const styles = StyleSheet.create({
     marginTop: 43,
     alignItems: "center",
   },
-  loginButton: {
+  signUpButton: {
     width: "100%",
     paddingVertical: 16,
     borderRadius: 100,
     backgroundColor: "#FF6C00",
   },
-  loginButtonTitle: {
+  signUpButtonTitle: {
     fontFamily: "Roboto-Medium",
     fontSize: 16,
     lineHeight: 19,
     textAlign: "center",
     color: "#FFFFFF",
   },
-  signUpForNotExistedAccount: {
+  loginForExistedAccount: {
     marginTop: 16,
     padding: 16,
   },
-  signUpForNotExistedAccountTitle: {
+  loginForExistedAccountTitle: {
     fontFamily: "Roboto-Medium",
     fontSize: 16,
     lineHeight: 19,

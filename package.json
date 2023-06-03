@@ -26,7 +26,7 @@
     "react-native-web": "~0.18.10"
   },
   "overrides": {
-    "react-devtools-core": "^4.25.0"
+    "react-devtools-core": "^4.27.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
