@@ -11,7 +11,11 @@ import {
   TouchableOpacity,
   Dimensions,
   Platform,
+  Button,
 } from "react-native";
+
+import * as Font from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 
 const initialState = {
   login: "",
@@ -21,7 +25,7 @@ const initialState = {
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RegistrationScreen() {
+export default function RegistrationScreen({ navigation }) {
   console.log(Platform.OS);
   console.log("Hi from Debugger!");
 
@@ -122,7 +126,7 @@ export default function RegistrationScreen() {
       <View style={{ ...styles.container }} onLayout={onLayoutRootView}>
         <Image
           style={styles.background}
-          source={require("../assets/images/PhotoBG.png")}
+          source={require("../../assets/images/PhotoBG.png")}
         />
         <View
           style={{
@@ -138,7 +142,7 @@ export default function RegistrationScreen() {
               <TouchableOpacity style={styles.iconWrapper} activeOpacity={0.8}>
                 <Image
                   style={styles.addIcon}
-                  source={require("../assets/images/add.png")}
+                  source={require("../../assets/images/add.png")}
                 />
               </TouchableOpacity>
             </View>
@@ -195,6 +199,18 @@ export default function RegistrationScreen() {
                 </TouchableOpacity>
               </View>
             </View>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Login")}
+              style={{
+                marginTop: 20,
+                alignSelf: "center",
+              }}
+            >
+              <Text style={{ color: "#fff" }}>
+                New to applicatio?{" "}
+                <Text style={{ fontSize: 20, color: "#ff6347" }}>Sign Up</Text>
+              </Text>
+            </TouchableOpacity>
           </KeyboardAvoidingView>
           <View style={{ ...styles.signUpButtonsWrapper, width: dimensions }}>
             <TouchableOpacity
@@ -202,7 +218,7 @@ export default function RegistrationScreen() {
               activeOpacity={0.8}
               onPress={formSubmit}
             >
-              <Text style={styles.signUpButtonTitle}>Sign Up</Text>
+              <Text style={styles.signUpButtonTitle}>Sign in</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
