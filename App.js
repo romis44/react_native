@@ -1,6 +1,6 @@
 import RegistrationScreen from "./Screens/auth/RegistrationScreen";
 import LoginScreen from "./Screens/auth/LoginScreen";
-// import { useFonts } from "expo-font";
+import { useFonts } from "expo-font";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import { NavigationContainer } from "@react-navigation/native";
