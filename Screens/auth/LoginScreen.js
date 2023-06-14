@@ -91,23 +91,6 @@ export default function LoginScreen({ navigation }) {
     };
   }, []);
 
-  useEffect(() => {
-    async function loadApplication() {
-      try {
-        await Font.loadAsync({
-          "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
-          "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
-        });
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        setIsReady(true);
-      }
-    }
-
-    loadApplication();
-  }, []);
-
   const onLayoutRootView = useCallback(async () => {
     if (isReady) {
       await SplashScreen.hideAsync();
