@@ -60,7 +60,6 @@ export default function LoginScreen({ navigation }) {
   useEffect(() => {
     const onChange = () => {
       const width = Dimensions.get("window").width - 16 * 2;
-      const height = Dimensions.get("window").height;
 
       setDimensions(width);
     };
@@ -92,22 +91,22 @@ export default function LoginScreen({ navigation }) {
     };
   }, []);
 
-  useEffect(() => {
-    async function loadApplication() {
-      try {
-        await Font.loadAsync({
-          "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
-          "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
-        });
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        setIsReady(true);
-      }
-    }
+  // useEffect(() => {
+  //   async function loadApplication() {
+  //     try {
+  //       await Font.loadAsync({
+  //         "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
+  //         "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
+  //       });
+  //     } catch (e) {
+  //       console.warn(e);
+  //     } finally {
+  //       setIsReady(true);
+  //     }
+  //   }
 
-    loadApplication();
-  }, []);
+  //   loadApplication();
+  // }, []);
 
   const onLayoutRootView = useCallback(async () => {
     if (isReady) {
