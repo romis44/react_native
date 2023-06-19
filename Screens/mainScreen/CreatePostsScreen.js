@@ -1,26 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { Camera } from "expo-camera";
+import { Camera, CameraType } from "expo-camera";
 // import { TouchableOpacity } from "react-native-gesture-handler";
+import * as Location from "expo-location";
 
 const CreatePostsScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  const [type, setType] = useState(CameraType.back);
+  const [permission, requestPermission] = Camera.useCameraPermissions();
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync();
+
+      console.log("latitude", location.coords.latitude);
+      console.log("longitude", location.coords.longitude);
+
+      setLocation(location);
+    })();
+
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+
+      if (status !== "granted") {
+        setErrorMsg("Permission to access camera was denied");
+        return;
+      }
+    })();
+  }, []);
+
+  let text = "Waiting..";
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+
+  if (!permission) {
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <Text style={{ textAlign: "center" }}>
+          We need your permission to show the camera
+        </Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
+  }
 
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
+    const location = await Location.getCurrentPositionAsync();
+    console.log("latitude", location.coords.latitude);
+    console.log("longitude", location.coords.longitude);
     setPhoto(photo.uri);
-    console.log("photo", photo);
+    console.log("photo.uri", photo.uri);
   };
 
   const sendPhoto = () => {
     console.log("nav", navigation);
-    navigation.navigate("Posts", { photo });
+    navigation.navigate("Profile", { photo });
   };
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} ref={setCamera}>
+      <Camera style={styles.camera} ref={setCamera} type={type}>
         {photo && (
           <View style={styles.takePhotoContainer}>
             <Image source={{ uri: photo }} style={{ height: 200, width: 90 }} />
