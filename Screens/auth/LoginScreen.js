@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useDispatch } from "react-redux";
 import {
   StyleSheet,
   TouchableWithoutFeedback,
@@ -16,6 +17,8 @@ import {
 
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+
+import { authLogInUser } from "../../redux/auth/authOperations";
 
 const initialState = {
   email: "",
@@ -43,7 +46,7 @@ export default function LoginScreen({ navigation }) {
 
   const formSubmit = () => {
     setIsPasswordSecured(true);
-    console.log(state);
+    dispatch(authLogInUser(state));
     setState(initialState);
     keyboardHide();
   };

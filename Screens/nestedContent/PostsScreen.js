@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, Image, Button } from "react-native";
+import { View, StyleSheet, FlatList, Image, Button, Text } from "react-native";
 
-const PostsScreen = ({ route }) => {
-  const [userPosts, setUserPosts] = useState([]);
+import { FontAwesome5, EvilIcons } from "@expo/vector-icons";
+
+const PostsScreen = ({ route, navigation }) => {
+  const [posts, setPosts] = useState([]);
+  console.log("route.params", route.params);
 
   useEffect(() => {
     if (route.params) {
-      setUserPosts((prevState) => [...prevState, route.params]);
+      setPosts((prevState) => [...prevState, route.params]);
     }
   }, [route.params]);
-  console.log("posts", userPosts);
-
+  console.log("posts", posts);
   return (
     <View style={styles.container}>
       <FlatList
-        data={userPosts}
+        data={posts}
         keyExtractor={(item, indx) => indx.toString()}
         renderItem={({ item }) => (
           <View
@@ -31,6 +33,11 @@ const PostsScreen = ({ route }) => {
           </View>
         )}
       />
+      <Button title="go to map" onPress={() => navigation.navigate("Map")} />
+      <Button
+        title="go to Comments"
+        onPress={() => navigation.navigate("Comments")}
+      />
     </View>
   );
 };
@@ -39,7 +46,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
   },
 });
 

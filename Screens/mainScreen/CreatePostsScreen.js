@@ -13,53 +13,53 @@ const CreatePostsScreen = ({ navigation }) => {
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
-        return;
-      }
+  // useEffect(() => {
+  //   (async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       setErrorMsg("Permission to access location was denied");
+  //       return;
+  //     }
 
-      let location = await Location.getCurrentPositionAsync();
+  //     let location = await Location.getCurrentPositionAsync();
 
-      console.log("latitude", location.coords.latitude);
-      console.log("longitude", location.coords.longitude);
+  //     console.log("latitude", location.coords.latitude);
+  //     console.log("longitude", location.coords.longitude);
 
-      setLocation(location);
-    })();
+  //     setLocation(location);
+  //   })();
 
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
+  //   (async () => {
+  //     const { status } = await Camera.requestCameraPermissionsAsync();
 
-      if (status !== "granted") {
-        setErrorMsg("Permission to access camera was denied");
-        return;
-      }
-    })();
-  }, []);
+  //     if (status !== "granted") {
+  //       setErrorMsg("Permission to access camera was denied");
+  //       return;
+  //     }
+  //   })();
+  // }, []);
 
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
+  // let text = "Waiting..";
+  // if (errorMsg) {
+  //   text = errorMsg;
+  // } else if (location) {
+  //   text = JSON.stringify(location);
+  // }
 
-  if (!permission) {
-    return <View />;
-  }
+  // if (!permission) {
+  //   return <View />;
+  // }
 
-  if (!permission.granted) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <Text style={{ textAlign: "center" }}>
-          We need your permission to show the camera
-        </Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
-    );
-  }
+  // if (!permission.granted) {
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: "center" }}>
+  //       <Text style={{ textAlign: "center" }}>
+  //         We need your permission to show the camera
+  //       </Text>
+  //       <Button onPress={requestPermission} title="grant permission" />
+  //     </View>
+  //   );
+  // }
 
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
@@ -72,7 +72,7 @@ const CreatePostsScreen = ({ navigation }) => {
 
   const sendPhoto = () => {
     console.log("nav", navigation);
-    navigation.navigate("Profile", { photo });
+    navigation.navigate("Posts", { photo });
   };
 
   return (

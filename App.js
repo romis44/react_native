@@ -4,11 +4,14 @@ import * as Font from "expo-font";
 import { AppLoading } from "expo";
 import {} from "react-native";
 import { useFonts } from "expo-font";
+import { Provider } from "react-redux";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 
 import { useRoute } from "./router";
+import { store } from "./redux/store";
+import db from "./firebase/config";
 
 import * as SplashScreen from "expo-splash-screen";
 SplashScreen.preventAutoHideAsync();
@@ -19,8 +22,10 @@ export default function App() {
     "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
   });
+  const [user, setUser] = useState(null);
 
-  const routing = useRoute(true);
+  db.auth().onAuthStateChanged((user) => setUser(user));
+  const routing = useRoute(user);
 
   useEffect(() => {
     const close = async () => {
@@ -34,5 +39,9 @@ export default function App() {
     return null;
   }
 
-  return <NavigationContainer>{routing}</NavigationContainer>;
+  return (
+    <Provider store={store}>
+      <NavigationContainer>{routing}</NavigationContainer>
+    </Provider>
+  );
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useDispatch } from "react-redux";
 import {
   StyleSheet,
   TouchableWithoutFeedback,
@@ -13,6 +14,8 @@ import {
   Platform,
   Button,
 } from "react-native";
+
+import { authSignUpUser } from "../../redux/auth/authOperations";
 
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -34,6 +37,8 @@ export default function RegistrationScreen({ navigation }) {
   const [, setIsKeyboardShown] = useState(false);
   const [isPasswordSecured, setIsPasswordSecured] = useState(true);
 
+  const dispatch = useDispatch();
+
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 16 * 2
   );
@@ -46,6 +51,7 @@ export default function RegistrationScreen({ navigation }) {
   const formSubmit = () => {
     setIsPasswordSecured(true);
     console.log(state);
+    dispatch(authSignUpUser(state));
     setState(initialState);
     keyboardHide();
   };

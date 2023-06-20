@@ -1,22 +1,3 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-
-const ProfileScreen = () => (
-  <View style={styles.container}>
-    <Text>Profile screen</Text>
-  </View>
-);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
-
-export default ProfileScreen;
-
 // import React, { useState, useEffect } from "react";
 // import { View, Text, StyleSheet, FlatList, Image } from "react-native";
 
@@ -63,3 +44,22 @@ export default ProfileScreen;
 // });
 
 // export default ProfileScreen;
+
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+
+const ProfileScreen = () => (
+  <View style={styles.container}>
+    <Text>Profile screen</Text>
+  </View>
+);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
+
+export default ProfileScreen;
