@@ -35,6 +35,8 @@ export default function LoginScreen({ navigation }) {
   const [, setIsKeyboardShown] = useState(false);
   const [isPasswordSecured, setIsPasswordSecured] = useState(true);
 
+  const dispatch = useDispatch();
+
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 16 * 2
   );
