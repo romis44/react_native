@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import {
   StyleSheet,
@@ -12,13 +12,10 @@ import {
   TouchableOpacity,
   Dimensions,
   Platform,
-  Button,
 } from "react-native";
 
+import { useNavigation } from "@react-navigation/native";
 import { authSignUpUser } from "../../redux/auth/authOperations";
-
-import * as Font from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
 
 const initialState = {
   login: "",
@@ -26,18 +23,13 @@ const initialState = {
   password: "",
 };
 
-SplashScreen.preventAutoHideAsync();
-
-export default function RegistrationScreen({ navigation }) {
-  console.log(Platform.OS);
-  console.log("Hi from Debugger!");
-
-  const [isReady, setIsReady] = useState(false);
+export default function RegistrationScreen() {
   const [state, setState] = useState(initialState);
   const [, setIsKeyboardShown] = useState(false);
   const [isPasswordSecured, setIsPasswordSecured] = useState(true);
 
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 16 * 2
@@ -50,10 +42,12 @@ export default function RegistrationScreen({ navigation }) {
 
   const formSubmit = () => {
     setIsPasswordSecured(true);
-    console.log(state);
+
     dispatch(authSignUpUser(state));
     setState(initialState);
     keyboardHide();
+
+    navigation.navigate("Home");
   };
 
   const passwordShown = () =>
@@ -68,7 +62,6 @@ export default function RegistrationScreen({ navigation }) {
   useEffect(() => {
     const onChange = () => {
       const width = Dimensions.get("window").width - 16 * 2;
-      const height = Dimensions.get("window").height;
 
       setDimensions(width);
     };
@@ -100,36 +93,9 @@ export default function RegistrationScreen({ navigation }) {
     };
   }, []);
 
-  // useEffect(() => {
-  //   async function loadApplication() {
-  //     try {
-  //       await Font.loadAsync({
-  //         "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
-  //         "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
-  //       });
-  //     } catch (e) {
-  //       console.warn(e);
-  //     } finally {
-  //       setIsReady(true);
-  //     }
-  //   }
-
-  //   loadApplication();
-  // }, []);
-
-  const onLayoutRootView = useCallback(async () => {
-    if (isReady) {
-      await SplashScreen.hideAsync();
-    }
-  }, [isReady]);
-
-  if (!isReady) {
-    return null;
-  }
-
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={{ ...styles.container }} onLayout={onLayoutRootView}>
+      <View style={{ ...styles.container }}>
         <Image
           style={styles.background}
           source={require("../../assets/images/PhotoBG.png")}
@@ -141,7 +107,7 @@ export default function RegistrationScreen({ navigation }) {
           }}
         >
           <KeyboardAvoidingView
-            style={styles.regulatedContainer}
+            style={styles.keyboardWrappper}
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
             <View style={styles.avatar}>
@@ -205,7 +171,9 @@ export default function RegistrationScreen({ navigation }) {
                 </TouchableOpacity>
               </View>
             </View>
-            <TouchableOpacity
+          </KeyboardAvoidingView>
+
+          {/* <TouchableOpacity
               onPress={() => navigation.navigate("Login")}
               style={{
                 marginTop: 20,
@@ -216,20 +184,21 @@ export default function RegistrationScreen({ navigation }) {
                 New to applicatio?{" "}
                 <Text style={{ fontSize: 20, color: "#ff6347" }}>Sign Up</Text>
               </Text>
-            </TouchableOpacity>
-          </KeyboardAvoidingView>
+            </TouchableOpacity> */}
+
           <View style={{ ...styles.signUpButtonsWrapper, width: dimensions }}>
             <TouchableOpacity
               style={styles.signUpButton}
               activeOpacity={0.8}
               onPress={formSubmit}
             >
-              <Text style={styles.signUpButtonTitle}>Sign in</Text>
+              <Text style={styles.signUpButtonTitle}>Sign up</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.loginForExistedAccount}
               activeOpacity={0.8}
+              onPress={() => navigation.navigate("Login")}
             >
               <Text style={styles.loginForExistedAccountTitle}>
                 Account already exists? Sign In
@@ -264,7 +233,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
-  regulatedContainer: {
+  keyboardWrappper: {
     alignItems: "center",
   },
   avatar: {

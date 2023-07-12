@@ -15,8 +15,7 @@ import {
   Button,
 } from "react-native";
 
-import * as Font from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
+import { useNavigation } from "@react-navigation/native";
 
 import { authLogInUser } from "../../redux/auth/authOperations";
 
@@ -25,17 +24,15 @@ const initialState = {
   password: "",
 };
 
-SplashScreen.preventAutoHideAsync();
-
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen() {
   console.log(Platform.OS);
 
-  const [isReady, setIsReady] = useState(false);
   const [state, setState] = useState(initialState);
   const [, setIsKeyboardShown] = useState(false);
   const [isPasswordSecured, setIsPasswordSecured] = useState(true);
 
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 16 * 2
@@ -51,6 +48,8 @@ export default function LoginScreen({ navigation }) {
     dispatch(authLogInUser(state));
     setState(initialState);
     keyboardHide();
+
+    navigation.navigate("Home");
   };
 
   const passwordShown = () =>
@@ -96,19 +95,9 @@ export default function LoginScreen({ navigation }) {
     };
   }, []);
 
-  const onLayoutRootView = useCallback(async () => {
-    if (isReady) {
-      await SplashScreen.hideAsync();
-    }
-  }, [isReady]);
-
-  if (!isReady) {
-    return null;
-  }
-
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={{ ...styles.container }} onLayout={onLayoutRootView}>
+      <View style={{ ...styles.container }}>
         <Image
           style={styles.background}
           source={require("../../assets/images/PhotoBG-2.png")}
@@ -120,10 +109,17 @@ export default function LoginScreen({ navigation }) {
           }}
         >
           <KeyboardAvoidingView
-            style={styles.regulatedContainer}
+            style={styles.keyboardWrappper}
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
             <View style={styles.avatar}>
+              <View style={styles.userPhotoWrapper}>
+                <Image
+                  style={styles.userPhoto}
+                  source={require("../../assets/images/profile_add.png")}
+                />
+              </View>
+
               <TouchableOpacity style={styles.iconWrapper} activeOpacity={0.8}>
                 <Image
                   style={styles.addIcon}
@@ -166,23 +162,27 @@ export default function LoginScreen({ navigation }) {
                   activeOpacity={0.8}
                   onPress={passwordShown}
                 >
-                  <Text>{showPasswordBtn}</Text>
+                  <Text style={styles.revealButtonTitle}>
+                    {showPasswordBtn}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Registration")}
-              style={{
-                marginTop: 20,
-                alignSelf: "center",
-              }}
-            >
-              <Text style={{ color: "#fff" }}>
-                New to applicatio?{" "}
-                <Text style={{ fontSize: 20, color: "#ff6347" }}>Sign Up</Text>
-              </Text>
-            </TouchableOpacity>
           </KeyboardAvoidingView>
+
+          {/* <TouchableOpacity
+            onPress={() => navigation.navigate("Registration")}
+            style={{
+              marginTop: 20,
+              alignSelf: "center",
+            }}
+          >
+            <Text style={{ color: "#fff" }}>
+              New to applicatio?{" "}
+              <Text style={{ fontSize: 20, color: "#ff6347" }}>Sign Up</Text>
+            </Text>
+          </TouchableOpacity> */}
+
           <View style={{ ...styles.signUpButtonsWrapper, width: dimensions }}>
             <TouchableOpacity
               style={styles.loginButton}
@@ -195,6 +195,7 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity
               style={styles.signUpForNotExistedAccount}
               activeOpacity={0.8}
+              onPress={() => navigation.navigate("Registration")}
             >
               <Text style={styles.signUpForNotExistedAccountTitle}>
                 Still have no account? Sign Up
@@ -229,17 +230,18 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
-  regulatedContainer: {
+  keyboardWrappper: {
     alignItems: "center",
   },
   avatar: {
     position: "relative",
     top: -60,
-    width: 120,
-    height: 120,
+
     zIndex: 1,
-    borderRadius: 16,
-    backgroundColor: "#F6F6F6",
+  },
+  userPhoto: {
+    width: "100%",
+    height: "100%",
   },
   iconWrapper: {
     position: "absolute",
@@ -316,5 +318,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: "#1B4371",
+  },
+  userPhotoWrapper: {
+    width: 120,
+    height: 120,
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "#F6F6F6",
   },
 });
