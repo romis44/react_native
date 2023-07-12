@@ -1,19 +1,18 @@
 import "react-native-gesture-handler";
-import React, { useState, useEffect } from "react";
-import * as Font from "expo-font";
-import { AppLoading } from "expo";
-import {} from "react-native";
-import { useFonts } from "expo-font";
+import React, { useEffect } from "react";
+
 import { Provider } from "react-redux";
-
-import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
-
-import { useRoute } from "./router";
-import { store } from "./redux/store";
-import db from "./firebase/config";
+import { PersistGate } from "redux-persist/integration/react";
+import { Text } from "react-native";
+import { useFonts } from "expo-font";
 
 import * as SplashScreen from "expo-splash-screen";
+import { NavigationContainer } from "@react-navigation/native";
+
+import RouterNavigator from "./router";
+import { store, persistor } from "./redux/store";
+import db from "./firebase/config";
+
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
@@ -22,10 +21,6 @@ export default function App() {
     "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
   });
-  const [user, setUser] = useState(null);
-
-  db.auth().onAuthStateChanged((user) => setUser(user));
-  const routing = useRoute(user);
 
   useEffect(() => {
     const close = async () => {
@@ -41,7 +36,11 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <NavigationContainer>{routing}</NavigationContainer>
+      <PersistGate persistor={persistor} loading={<Text>Loading...</Text>}>
+        <NavigationContainer>
+          <RouterNavigator />
+        </NavigationContainer>
+      </PersistGate>
     </Provider>
   );
 }
