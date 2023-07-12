@@ -1,11 +1,14 @@
 import React from "react";
-import { moduleName } from "react-native";
+import { StyleSheet, View, Image, Text } from "react-native";
+
+import { createStackNavigator } from "@react-navigation/stack";
 
 import { createStackNavigator } from "@react-navigation/stack";
 
 import PostsScreen from "../nestedContent/PostsScreen";
 import CommentsScreen from "../nestedContent/CommentsScreen";
 import MapScreen from "../nestedContent/MapScreen";
+import { useSelector } from "react-redux";
 
 const NestedScreen = createStackNavigator();
 
