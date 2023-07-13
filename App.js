@@ -6,13 +6,12 @@ import { PersistGate } from "redux-persist/integration/react";
 import { Text } from "react-native";
 import { useFonts } from "expo-font";
 
-import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
 
-import RouterNavigator from "./router";
+import * as SplashScreen from "expo-splash-screen";
 import { store, persistor } from "./redux/store";
-import db from "./firebase/config";
 
+import { RouterNavigator } from "./router";
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {

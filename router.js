@@ -8,17 +8,19 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
 
-const AuthStack = createStackNavigator();
-const MainTab = createBottomTabNavigator();
-
 import RegistrationScreen from "./Screens/auth/RegistrationScreen";
 import LoginScreen from "./Screens/auth/LoginScreen";
 import Home from "./Screens/mainScreen/Home";
 import CreatePostsScreen from "./Screens/mainScreen/CreatePostsScreen";
 import ProfileScreen from "./Screens/mainScreen/ProfileScreen";
 
+const AuthStack = createStackNavigator();
+const MainTab = createBottomTabNavigator();
+
 export const RouterNavigator = () => {
   const dispatch = useDispatch();
+
+  const { isAuth } = useSelector((state) => state);
 
   if (!isAuth) {
     return (
@@ -120,7 +122,7 @@ export const RouterNavigator = () => {
           ),
         }}
         name="Create"
-        component={CreatePostScreen}
+        component={CreatePostsScreen}
       />
 
       <MainTab.Screen name="Profile" component={ProfileScreen} />
