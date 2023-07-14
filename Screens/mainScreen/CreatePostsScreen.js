@@ -9,12 +9,15 @@ import {
   Keyboard,
   Alert,
 } from "react-native";
-import { Camera, CameraType } from "expo-camera";
+
 // import { TouchableOpacity } from "react-native-gesture-handler";
-import * as Location from "expo-location";
+
 import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
+
+import { Camera, CameraType } from "expo-camera";
+import * as Location from "expo-location";
 
 import { Fontisto, EvilIcons, AntDesign } from "@expo/vector-icons";
 
@@ -91,22 +94,12 @@ export default function CreatePostsScreen() {
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
     setPhoto(photo.uri);
-    console.log("photo.uri", photo.uri);
   };
 
   const toggleCameraType = () => {
     setType((current) =>
       current === CameraType.back ? CameraType.front : CameraType.back
     );
-  };
-
-  const sendPhoto = async () => {
-    await writeDataToFirestore();
-
-    setIsKeyboardShown(false);
-    Keyboard.dismiss();
-
-    navigation.navigate("Posts");
   };
 
   const writeDataToFirestore = async () => {
@@ -130,6 +123,15 @@ export default function CreatePostsScreen() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const sendPhoto = async () => {
+    await writeDataToFirestore();
+
+    setIsKeyboardShown(false);
+    Keyboard.dismiss();
+
+    navigation.navigate("Posts");
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import {
   StyleSheet,
@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   Dimensions,
   Platform,
-  Button,
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
@@ -25,14 +24,12 @@ const initialState = {
 };
 
 export default function LoginScreen() {
-  console.log(Platform.OS);
-
   const [state, setState] = useState(initialState);
   const [, setIsKeyboardShown] = useState(false);
   const [isPasswordSecured, setIsPasswordSecured] = useState(true);
 
-  const dispatch = useDispatch();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 16 * 2

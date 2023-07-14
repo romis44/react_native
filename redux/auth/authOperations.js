@@ -19,7 +19,6 @@ export const authSignUpUser = createAsyncThunk(
 
       if (user) {
         await updateProfile(user, { displayName: login });
-        console.log("user", user);
 
         const { displayName, uid } = auth.currentUser;
 

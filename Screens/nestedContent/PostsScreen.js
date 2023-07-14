@@ -7,7 +7,7 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { useFocusEffect, useNavigationState } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { FontAwesome5, EvilIcons } from "@expo/vector-icons";
 
@@ -16,8 +16,6 @@ import { database } from "../../firebase/config";
 
 export default function PostsScreen({ navigation }) {
   const [posts, setPosts] = useState([]);
-
-  // const arrayLength = useNavigationState(state => state.routes.length);
 
   const getDataFromFirestore = async () => {
     try {
@@ -60,7 +58,6 @@ export default function PostsScreen({ navigation }) {
                   onPress={() =>
                     navigation.navigate("Comments", { postID: item.id })
                   }
-                  // arrayLength={arrayLength}
                 >
                   <FontAwesome5 name="comments" size={24} color="#BDBDBD" />
 

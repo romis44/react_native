@@ -3,10 +3,12 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { TouchableOpacity } from "react-native";
 
-import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 
 import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
+
+import { authSignOutUser } from "./redux/auth/authOperations";
 
 import RegistrationScreen from "./Screens/auth/RegistrationScreen";
 import LoginScreen from "./Screens/auth/LoginScreen";
@@ -17,7 +19,7 @@ import ProfileScreen from "./Screens/mainScreen/ProfileScreen";
 const AuthStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
-export const RouterNavigator = () => {
+export default function RouterNavigator() {
   const dispatch = useDispatch();
 
   const { isAuth } = useSelector((state) => state);
@@ -128,4 +130,4 @@ export const RouterNavigator = () => {
       <MainTab.Screen name="Profile" component={ProfileScreen} />
     </MainTab.Navigator>
   );
-};
+}

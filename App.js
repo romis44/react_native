@@ -11,7 +11,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
 import { store, persistor } from "./redux/store";
 
-import { RouterNavigator } from "./router";
+import RouterNavigator from "./router";
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {

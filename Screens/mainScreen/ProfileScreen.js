@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -18,7 +18,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { authSignOutUser } from "../../redux/auth/authOperations";
 import { database } from "../../firebase/config";
 
-const ProfileScreen = ({ navigation }) => {
+export default function ProfileScreen({ navigation }) {
   const [userPosts, setUserPosts] = useState([]);
 
   const { login, userID } = useSelector((state) => state);
@@ -134,7 +134,7 @@ const ProfileScreen = ({ navigation }) => {
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -221,5 +221,3 @@ const styles = StyleSheet.create({
     color: "#212121",
   },
 });
-
-export default ProfileScreen;

@@ -28,8 +28,8 @@ export default function RegistrationScreen() {
   const [, setIsKeyboardShown] = useState(false);
   const [isPasswordSecured, setIsPasswordSecured] = useState(true);
 
-  const dispatch = useDispatch();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 16 * 2
@@ -43,9 +43,9 @@ export default function RegistrationScreen() {
   const formSubmit = () => {
     setIsPasswordSecured(true);
 
+    keyboardHide();
     dispatch(authSignUpUser(state));
     setState(initialState);
-    keyboardHide();
 
     navigation.navigate("Home");
   };
@@ -55,7 +55,7 @@ export default function RegistrationScreen() {
       ? setIsPasswordSecured(false)
       : setIsPasswordSecured(true);
 
-  const showPasswordBtn = isPasswordSecured
+  const showPasswordButton = isPasswordSecured
     ? "Reveal password"
     : "Hide password";
 
@@ -166,25 +166,12 @@ export default function RegistrationScreen() {
                   onPress={passwordShown}
                 >
                   <Text style={styles.revealButtonTitle}>
-                    {showPasswordBtn}
+                    {showPasswordButton}
                   </Text>
                 </TouchableOpacity>
               </View>
             </View>
           </KeyboardAvoidingView>
-
-          {/* <TouchableOpacity
-              onPress={() => navigation.navigate("Login")}
-              style={{
-                marginTop: 20,
-                alignSelf: "center",
-              }}
-            >
-              <Text style={{ color: "#fff" }}>
-                New to applicatio?{" "}
-                <Text style={{ fontSize: 20, color: "#ff6347" }}>Sign Up</Text>
-              </Text>
-            </TouchableOpacity> */}
 
           <View style={{ ...styles.signUpButtonsWrapper, width: dimensions }}>
             <TouchableOpacity
@@ -192,7 +179,7 @@ export default function RegistrationScreen() {
               activeOpacity={0.8}
               onPress={formSubmit}
             >
-              <Text style={styles.signUpButtonTitle}>Sign up</Text>
+              <Text style={styles.signUpButtonTitle}>Sign Up</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
